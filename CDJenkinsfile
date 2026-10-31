@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/Muthamizhan-N/Maven-CI-Pipeline.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn -B -ntp clean package'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                    mkdir -p /home/Muthamizhan/deployment/app
+                    cp target/f1worker-1.0.jar /home/Muthamizhan/deployment/app/
+                '''
+            }
+        }
+
+        stage('Run Application') {
+            steps {
+                sh '''
+                    java -jar /home/Muthamizhan/deployment/app/f1worker-1.0.jar
+                '''
+            }
+        }
+    }
+}
